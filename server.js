@@ -30,11 +30,8 @@ app.post("/restaurants", async (req, res) => {
 });
 
 app.put("/restaurants/:id", async (req, res) => {
-  let restaurant = await Restaurant.update(req.body, {
-    where: {
-      id: req.params.id,
-    },
-  });
+  let restaurant = await Restaurant.findByPk(req.params.id)
+  await restaurant.update(req.body);
   res.json(restaurant);
 });
 
@@ -44,5 +41,6 @@ app.delete("/restaurants/:id", async (req, res) => {
       id: req.params.id
     }
   });
-  res.json(restaurant);
+  const allRestaurants = await Restaurant.findAll();
+  res.json(allRestaurants);
 })
