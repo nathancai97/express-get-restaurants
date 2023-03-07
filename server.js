@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
-const { Restaurant } = require("./models/index");
 const { sequelize } = require("./db");
+const restaurantRouter = require('./routes/restaurantRoutes');
 
 const port = 3000;
 
 app.use(express.json());
+
+app.use("/restaurants", restaurantRouter);
 
 app.listen(port, () => {
   sequelize.sync();
@@ -13,34 +15,3 @@ app.listen(port, () => {
 });
 
 //TODO: Create your GET Request Route Below:
-
-app.get("/restaurants", async (req, res) => {
-  const data = await Restaurant.findAll();
-  return res.json(data);
-});
-
-app.get("/restaurants/:id", async (req, res) => {
-  const data = await Restaurant.findByPk(req.params.id);
-  return res.json(data);
-});
-
-app.post("/restaurants", async (req, res) => {
-  const restaurant = await Restaurant.create(req.body);
-  res.json(restaurant);
-});
-
-app.put("/restaurants/:id", async (req, res) => {
-  let restaurant = await Restaurant.findByPk(req.params.id)
-  await restaurant.update(req.body);
-  res.json(restaurant);
-});
-
-app.delete("/restaurants/:id", async (req, res) => {
-  let restaurant = await Restaurant.destroy({
-    where: {
-      id: req.params.id
-    }
-  });
-  const allRestaurants = await Restaurant.findAll();
-  res.json(allRestaurants);
-})
